@@ -9,7 +9,7 @@ public class SpawnerDynamit : MonoBehaviour
     public float spawnInterval = 5f;
     public float spawnDistance = 3f;
     public float spawnYOffset = -0.5f; 
-    public int maxDynamite = 5;
+    public int maxDynamite = 1;
     
     private float nextSpawnTime;
     private int currentDynamite = 0;
@@ -41,7 +41,10 @@ public class SpawnerDynamit : MonoBehaviour
         
         GameObject dynamite = Instantiate(dynamitePrefab, spawnPos, Quaternion.identity);
         
-        Dynamite dynamiteScript = dynamite.AddComponent<Dynamite>();
+        Dynamite dynamiteScript = dynamite.GetComponent<Dynamite>();
+        if (dynamiteScript == null)
+            dynamiteScript = dynamite.AddComponent<Dynamite>();
+        
         dynamiteScript.spawner = this;
         
         currentDynamite++;

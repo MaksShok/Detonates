@@ -81,7 +81,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.2987774, g: 1, b: 0.08962262, a: 1}
@@ -106,7 +106,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dynamite
   spawner: {fileID: 0}
-  fuseTime: 5
+  disappearIfNotPickedUp: 5
+  fuseTime: 3
+  pickUpRange: 1
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  explosionRadius: 3
+  explosionDamage: 100
+  explosionEffect: {fileID: 0}
 --- !u!58 &-2125520502041379145
 CircleCollider2D:
   m_ObjectHideFlags: 0

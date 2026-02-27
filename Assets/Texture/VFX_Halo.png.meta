@@ -1,11 +1,10 @@
 fileFormatVersion: 2
-guid: 0dfb862a4c639dd4d99be7303bf05799
+guid: 3f0952038e05d4941ad6904fc1528623
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4194834705825124084
-    second: "\u0421\u043D\u0438\u043C\u043E\u043A \u044D\u043A\u0440\u0430\u043D\u0430
-      2026-02-25 224612_0"
+      213: 2982521343375116540
+    second: VFX_Halo_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -114,14 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u0421\u043D\u0438\u043C\u043E\u043A \u044D\u043A\u0440\u0430\u043D\u0430
-        2026-02-25 224612_0"
+      name: VFX_Halo_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 275
-        height: 263
+        width: 178
+        height: 154
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c0130db6f04f8c5c0800000000000000
-      internalID: -4194834705825124084
+      spriteID: cf805e61c5b046920800000000000000
+      internalID: 2982521343375116540
       vertices: []
       indices: 
       edges: []
@@ -150,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "\u0421\u043D\u0438\u043C\u043E\u043A \u044D\u043A\u0440\u0430\u043D\u0430 2026-02-25 224612_0": -4194834705825124084
+      VFX_Halo_0: 2982521343375116540
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
