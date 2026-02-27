@@ -16,7 +16,7 @@ public class EnemyPool
     {
         _prefab = prefab;
         _expansionSize = expansionSize;
-        _сontainer = container ?? CreateDefaultContainer();
+        _сontainer = container ? container : CreateDefaultContainer();
 
         InitializePool(initialSize);
     }

@@ -27,30 +27,30 @@ public class EnemyGenerator : MonoBehaviour
     private LevelConfig _levelConfig;
     private int _currentSpawnPointIndex;
     
-    private int _totalEnemiesInWave; // из обработчика конфига
+    private int _totalEnemies; // из LevelConfigReader
 
     public void Initialize(LevelConfig levelConfig)
     {
         _levelConfig = levelConfig;
 
-        // ----- обработку конфига нужно вынести в отдельный класс
-        var concreteEnemyAmountDict = new Dictionary<string, (int amount, GameObject prefab)>();
-        foreach (var concreteWave in _levelConfig.WaveInfos)
+        // ----- обработку конфига нужно вынести в LevelConfigReader
+        var enemyAmountDict = new Dictionary<string, (int amount, GameObject prefab)>();
+        foreach (var waveInfo in _levelConfig.WaveInfos)
         {
-            foreach (var enemyInfo in concreteWave.EnemiesSpawnInfo)
+            foreach (var enemyInfo in waveInfo.EnemiesSpawnInfo)
             {
                 if (enemyInfo.EnemyPrefab == null)
                     continue;
                 
                 string enemyName = enemyInfo.EnemyPrefab.name;
-                _totalEnemiesInWave += enemyInfo.Amount; // из обработчика конфига
-                if (!concreteEnemyAmountDict.ContainsKey(enemyName))
+                _totalEnemies += enemyInfo.Amount; // из LevelConfigReader
+                if (!enemyAmountDict.ContainsKey(enemyName))
                 {
-                    concreteEnemyAmountDict.Add(enemyName, (enemyInfo.Amount, enemyInfo.EnemyPrefab));
+                    enemyAmountDict.Add(enemyName, (enemyInfo.Amount, enemyInfo.EnemyPrefab));
                 }
                 else
                 {
-                    var concreteEnemyAmount = concreteEnemyAmountDict[enemyName];
+                    var concreteEnemyAmount = enemyAmountDict[enemyName];
                     concreteEnemyAmount.amount += enemyInfo.Amount;
                 }
             }
@@ -58,8 +58,8 @@ public class EnemyGenerator : MonoBehaviour
         // -------
 
         _enemyPools = new Dictionary<string, EnemyPool>();
-        foreach (var concreteEnemyAmount in concreteEnemyAmountDict)
-        {
+        foreach (var concreteEnemyAmount in enemyAmountDict)
+        { 
             string key = concreteEnemyAmount.Key;
             GameObject prefab = concreteEnemyAmount.Value.prefab;
             int initialSize = Mathf.FloorToInt(concreteEnemyAmount.Value.amount * _percentageOfEnemyCountPullSize);
@@ -86,17 +86,17 @@ public class EnemyGenerator : MonoBehaviour
         
     private IEnumerator GenerateEnemyCoroutine(float duration, LevelConfig.EnemySpawnInfo[] enemySpawnInfos)
     {
-        if (_totalEnemiesInWave == 0 || duration <= 0f)
+        if (_totalEnemies == 0 || duration <= 0f)
         {
             Debug.LogWarning("Нет врагов для генерации или длительность волны равна 0");
             OnWaveCompleted?.Invoke();
             yield break;
         }
 
-        float spawnInterval = duration / _totalEnemiesInWave;
+        float spawnInterval = duration / _totalEnemies;
         int totalSpawned = 0;
         
-        while (totalSpawned < _totalEnemiesInWave && IsGenerating)
+        while (totalSpawned < _totalEnemies && IsGenerating)
         {
             GameObject prefab = enemySpawnInfos[totalSpawned].EnemyPrefab;
             string enemyName = prefab.name;
@@ -116,12 +116,12 @@ public class EnemyGenerator : MonoBehaviour
             OnEnemySpawned?.Invoke(enemy);
             
             totalSpawned++;
-            OnWaveProgress?.Invoke(totalSpawned, _totalEnemiesInWave);
+            OnWaveProgress?.Invoke(totalSpawned, _totalEnemies);
             
             yield return new WaitForSeconds(spawnInterval);
         }
 
-        //yield return WaitForAllEnemiesDie();
+        //дожидаемся когда все враги умрут
         
         OnWaveCompleted?.Invoke();
         print("Волна закончилась");
