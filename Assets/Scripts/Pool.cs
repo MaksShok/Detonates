@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyPool
+public class Pool
 {
     public int AvailableObjectsCount => _pool.Count;
     public int Size => _size;
@@ -12,7 +12,7 @@ public class EnemyPool
     private int _size;
     private int _expansionSize;
     
-    public EnemyPool(GameObject prefab, int initialSize, int expansionSize = 10, Transform container = null)
+    public Pool(GameObject prefab, int initialSize, int expansionSize = 10, Transform container = null)
     {
         _prefab = prefab;
         _expansionSize = expansionSize;

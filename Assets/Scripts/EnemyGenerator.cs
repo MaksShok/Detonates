@@ -22,7 +22,7 @@ public class EnemyGenerator : MonoBehaviour
     
     public bool IsGenerating => _generateProcess != null;
 
-    private Dictionary<string, EnemyPool> _enemyPools;
+    private Dictionary<string, Pool> _enemyPools;
     private Coroutine _generateProcess;
     private LevelConfig _levelConfig;
     private int _currentSpawnPointIndex;
@@ -57,14 +57,14 @@ public class EnemyGenerator : MonoBehaviour
         }
         // -------
 
-        _enemyPools = new Dictionary<string, EnemyPool>();
+        _enemyPools = new Dictionary<string, Pool>();
         foreach (var concreteEnemyAmount in enemyAmountDict)
         { 
             string key = concreteEnemyAmount.Key;
             GameObject prefab = concreteEnemyAmount.Value.prefab;
             int initialSize = Mathf.FloorToInt(concreteEnemyAmount.Value.amount * _percentageOfEnemyCountPullSize);
                 
-            _enemyPools.Add(key, new EnemyPool(prefab, initialSize, _expansionSize));
+            _enemyPools.Add(key, new Pool(prefab, initialSize, _expansionSize));
             Debug.Log($"Пул для '{key}': {initialSize} / {concreteEnemyAmount.Value.amount} объектов ({_percentageOfEnemyCountPullSize:P0})");
         }
     }
