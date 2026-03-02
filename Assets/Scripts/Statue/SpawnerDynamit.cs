@@ -4,7 +4,7 @@ public class SpawnerDynamit : MonoBehaviour
 {
     public GameObject dynamitePrefab;
     public Transform statue;
-    
+                                      
     [Header("Настройки спавна")]
     public float spawnInterval = 5f;
     public float spawnDistance = 3f;
