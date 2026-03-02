@@ -31,7 +31,13 @@ public class PlayerController : MonoBehaviour
         float moveY = Input.GetAxisRaw("Vertical");
         Vector2 moveDirection = new Vector2(moveX, moveY).normalized;
         rb.linearVelocity = moveDirection * Speed;
-        
+
+        //поворот обьекта!!
+        if (moveX != 0)
+        {
+            transform.rotation = Quaternion.Euler(0, moveX > 0 ? 0 : 180, 0);
+        }
+
         // Проверка на установку динамита
         if (Input.GetKeyDown(KeyCode.E) && currentDynamite != null)
         {
