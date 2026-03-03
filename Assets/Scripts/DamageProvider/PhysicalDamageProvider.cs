@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using HealthModule;
+using UnityEngine;
 
-namespace HealthModule
+namespace DamageProvider
 {
-    public class DamageProvider : MonoBehaviour
+    public class PhysicalDamageProvider : MonoBehaviour
     {
         [SerializeField] 
         private Collider2D _trigger;

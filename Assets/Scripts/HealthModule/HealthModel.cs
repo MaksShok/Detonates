@@ -1,28 +1,32 @@
-﻿using System;
-using HealthModule;
+﻿using HealthModule;
+using ReactivePR;
 using UnityEngine;
 
 public class HealthModel : ISpendHealth
 {
-    public event Action<int> OnHealthChanged;
-    
-    public bool Alive => _health > 0;
-    public int Health => _health;
-    
-    private int _health;
+    public bool Alive => _health.Value > 0;
+
+    public IReadOnlyReactiveProperty<int> Health => _health;
+
+    private ReactiveProperty<int> _health = new ReactiveProperty<int>(0);
     
     public HealthModel(int startHealth)
     {
-        _health = Mathf.Max(0, startHealth);
+        _health.Value = Mathf.Max(0, startHealth);
     }
 
-    public void SpendHealth(int damage)
+    public void Spend(int damage)
     {
-        _health = Mathf.Max(0, _health - damage);
+        _health.Value = Mathf.Max(0, _health.Value - damage);
     }
 
     public void AddHealth(int healthBuff)
     {
-        _health += Mathf.Abs(healthBuff);
+        _health.Value += Mathf.Abs(healthBuff);
+    }
+
+    public void SetHealth(int health)
+    {
+        _health.Value = health;
     }
 }

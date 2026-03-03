@@ -2,6 +2,7 @@
 {
     public interface ISpendHealth
     {
-        void SpendHealth(int damage);
+        bool Alive { get; }
+        void Spend(int damage);
     }
 }
