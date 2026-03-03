@@ -1,9 +1,16 @@
-﻿using UnityEngine;
-
-public class GameLoop : MonoBehaviour, ICoroutineRunner
+﻿public class GameLoop
 {
-    private int enemy1Count;
-    private int enemy2Count;
-    
-    
+    private readonly ICoroutineRunner _coroutineRunner;
+    private readonly EnemyGenerator _enemyGenerator;
+
+    public GameLoop(ICoroutineRunner coroutineRunner, EnemyGenerator enemyGenerator)
+    {
+        _coroutineRunner = coroutineRunner;
+        _enemyGenerator = enemyGenerator;
+    }
+
+    public void StartGame()
+    {
+        _enemyGenerator.StopGeneration();
+    }
 }
