@@ -5,6 +5,7 @@ using Object = UnityEngine.Object;
 
 public class Pool<T> where T : Component
 {
+    public IReadOnlyCollection<T> ObjectsInPool => _pool;
     public int AvailableObjectsCount => _pool.Count;
     public int Size => _size;
 
@@ -15,7 +16,6 @@ public class Pool<T> where T : Component
     public Pool(Func<T> factoryAction, int initialSize)
     {
         _factoryAction = factoryAction;
-
         InitializePool(initialSize);
     }
 

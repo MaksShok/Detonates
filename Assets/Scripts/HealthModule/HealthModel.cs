@@ -5,30 +5,22 @@ namespace HealthModule
 {
     public class HealthModel : ISpendHealth
     {
-        public bool Alive => _health.Value > 0;
-
-        public IReadOnlyReactiveProperty<int> Health => _health;
-
-        private ReactiveProperty<int> _health = new ReactiveProperty<int>(0);
-    
-        public HealthModel(int startHealth)
+        public int Health { get; private set; }
+        public bool Alive => Health > 0;
+        
+        public HealthModel(int value)
         {
-            _health.Value = Mathf.Max(0, startHealth);
+            Health = Mathf.Max(0, value);
         }
 
-        public void Spend(int damage)
+        public void Spend(int value)
         {
-            _health.Value = Mathf.Max(0, _health.Value - damage);
+            Health = Mathf.Max(0, Health - value);
         }
 
-        public void AddHealth(int healthBuff)
+        public void SetHealth(int value)
         {
-            _health.Value += Mathf.Abs(healthBuff);
-        }
-
-        public void SetHealth(int health)
-        {
-            _health.Value = health;
+            Health = value;
         }
     }
 }

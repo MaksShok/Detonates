@@ -1,8 +1,7 @@
 ﻿namespace HealthModule
 {
-    public interface ISpendHealth
+    public interface ISpendHealth : IHealth
     {
-        bool Alive { get; }
-        void Spend(int damage);
+        void Spend(int value);
     }
 }

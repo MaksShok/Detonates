@@ -19,8 +19,6 @@ namespace LevelModule
         private Transform _enemyContainer;
 
         public event Action<int, int> OnWaveProgress; // spawned, total
-    
-        public bool IsGenerating => _generateProcess != null;
 
         private BattleGenerationConfig _battleConfig;
         private EnemyFactory _enemyFactory;
@@ -65,8 +63,13 @@ namespace LevelModule
                 EnemyBehavior prefab = concreteEnemyAmount.Value.prefab;
                 int initialSize = Mathf.CeilToInt(concreteEnemyAmount.Value.amount * _percentageOfEnemyCountPullSize);
 
-                Func<EnemyBehavior> createEnemyFunc = () => 
-                    _enemyFactory.Create(prefab, Vector3.zero, Quaternion.identity, _enemyContainer, nameKey);
+                Func<EnemyBehavior> createEnemyFunc = () =>
+                {
+                    var enemy = _enemyFactory.Create(prefab, Vector3.zero, Quaternion.identity, _enemyContainer,
+                            nameKey);
+                    
+                    return enemy;
+                };
             
                 _enemyPools.Add(nameKey, new Pool<EnemyBehavior>(createEnemyFunc, initialSize));
                 Debug.Log($"Пул для '{nameKey}': {initialSize} / {concreteEnemyAmount.Value.amount} объектов ({_percentageOfEnemyCountPullSize:P0})");
@@ -79,8 +82,7 @@ namespace LevelModule
             _generateProcess = StartCoroutine(GenerateEnemyCoroutine(duration, enemySpawnInfos));
             return _generateProcess;
         }
-        
-    
+
         public void StopGeneration()
         {
             if (_generateProcess != null)
@@ -89,7 +91,7 @@ namespace LevelModule
                 _generateProcess = null;
             }
         }
-        
+
         private IEnumerator GenerateEnemyCoroutine(float duration, BattleGenerationConfig.EnemySpawnInfo[] enemySpawnInfos)
         {
             if (_totalEnemies == 0 || duration <= 0f)
@@ -101,7 +103,7 @@ namespace LevelModule
             float spawnInterval = duration / _totalEnemies;
             int totalSpawned = 0;
         
-            while (totalSpawned < _totalEnemies && IsGenerating)
+            while (totalSpawned < _totalEnemies)
             {
                 EnemyBehavior prefab = enemySpawnInfos[totalSpawned].EnemyBehaviorPrefab;
                 string enemyName = prefab.name;
@@ -116,6 +118,8 @@ namespace LevelModule
                 EnemyBehavior enemy = pool.GetObject();
                 enemy.transform.position = spawnPoint.position;
                 enemy.transform.rotation = spawnPoint.rotation;
+                
+                // тут нужно отслеживать здоровье enemy и когда оно равно 0, то возвращать в pool
             
                 totalSpawned++;
                 OnWaveProgress?.Invoke(totalSpawned, _totalEnemies);
@@ -129,6 +133,8 @@ namespace LevelModule
         
             print("Волна закончилась");
         }
+        
+        
 
         private Transform GetNextSpawnPoint()
         {

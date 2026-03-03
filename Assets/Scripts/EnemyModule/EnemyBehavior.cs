@@ -16,6 +16,8 @@ namespace EnemyModule
         [SerializeField] private Rigidbody2D _rb;
         [SerializeField] private EnemyConfig _config;
 
+        public IHealth Health => _healthModel;
+        
         private Transform _towerTransform;
         private ISpendHealth _towerSpendHealth;
         private StateMachine _stateMachine;
@@ -47,11 +49,6 @@ namespace EnemyModule
         private void Update()
         {
             _stateMachine?.Update();
-
-            if (_healthModel.Alive == false)
-            {
-                Destroy(gameObject);
-            }
         }
 
         private void FixedUpdate()
