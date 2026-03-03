@@ -25,9 +25,8 @@ namespace LevelModule
         private BattleGenerationConfig _battleConfig;
         private EnemyFactory _enemyFactory;
         
-        private Dictionary<string, Pool> _enemyPools;
+        private Dictionary<string, Pool<EnemyBehavior>> _enemyPools = new ();
         private Coroutine _generateProcess;
-        private Transform _currentInitialPointRef;
         private int _currentSpawnPointIndex;
         private int _totalEnemies;
 
@@ -60,18 +59,16 @@ namespace LevelModule
             }
             // -------
         
-            _enemyPools = new Dictionary<string, Pool>();
-            _currentInitialPointRef = _enemyInitialPoints[_currentSpawnPointIndex];
             foreach (var concreteEnemyAmount in enemyAmountDict)
             { 
                 string nameKey = concreteEnemyAmount.Key;
                 EnemyBehavior prefab = concreteEnemyAmount.Value.prefab;
                 int initialSize = Mathf.CeilToInt(concreteEnemyAmount.Value.amount * _percentageOfEnemyCountPullSize);
 
-                Func<GameObject> createEnemyFunc = () => _enemyFactory.Create(
-                    prefab, _currentInitialPointRef.position, Quaternion.identity, _enemyContainer, nameKey).gameObject;
+                Func<EnemyBehavior> createEnemyFunc = () => 
+                    _enemyFactory.Create(prefab, Vector3.zero, Quaternion.identity, _enemyContainer, nameKey);
             
-                _enemyPools.Add(nameKey, new Pool(createEnemyFunc, initialSize));
+                _enemyPools.Add(nameKey, new Pool<EnemyBehavior>(createEnemyFunc, initialSize));
                 Debug.Log($"Пул для '{nameKey}': {initialSize} / {concreteEnemyAmount.Value.amount} объектов ({_percentageOfEnemyCountPullSize:P0})");
             }
         }
@@ -116,10 +113,8 @@ namespace LevelModule
                 }
     
                 Transform spawnPoint = GetNextSpawnPoint();
-                Vector3 spawnPosition = spawnPoint.position;
-            
-                GameObject enemy = pool.GetObject();
-                enemy.transform.position = spawnPosition;
+                EnemyBehavior enemy = pool.GetObject();
+                enemy.transform.position = spawnPoint.position;
                 enemy.transform.rotation = spawnPoint.rotation;
             
                 totalSpawned++;
@@ -129,6 +124,8 @@ namespace LevelModule
             }
     
             //тут должна быть логика --> дожидаемся когда все враги умрут
+            
+            
         
             print("Волна закончилась");
         }

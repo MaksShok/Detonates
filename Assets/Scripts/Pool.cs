@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public class Pool
+public class Pool<T> where T : Component
 {
     public int AvailableObjectsCount => _pool.Count;
     public int Size => _size;
 
-    private Queue<GameObject> _pool = new Queue<GameObject>();
-    private Func<GameObject> _factoryAction; 
+    private Queue<T> _pool = new ();
+    private Func<T> _factoryAction; 
     private int _size;
 
-    public Pool(Func<GameObject> factoryAction, int initialSize)
+    public Pool(Func<T> factoryAction, int initialSize)
     {
         _factoryAction = factoryAction;
 
@@ -29,17 +29,17 @@ public class Pool
 
     public void CreateObject()
     {
-        GameObject obj = _factoryAction?.Invoke();
+        T obj = _factoryAction?.Invoke();
         if (obj == null)
             return;
         
-        obj.SetActive(false);
+        obj.gameObject.SetActive(false);
         _pool.Enqueue(obj);
         
         _size += 1;
     }
 
-    public GameObject GetObject()
+    public T GetObject()
     {
         if (_pool.Count == 0)
         {
@@ -47,18 +47,18 @@ public class Pool
         }
 
         var obj = _pool.Dequeue();
-        obj.SetActive(true);
+        obj.gameObject.SetActive(true);
 
         return obj;
     }
 
-    public void ReturnObject(GameObject obj)
+    public void ReturnObject(T obj)
     {
         if (obj == null)
             return;
 
         _pool.Enqueue(obj);
-        obj.SetActive(false);
+        obj.gameObject.SetActive(false);
     }
 
     public void Clear()

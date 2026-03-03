@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c17b4ddef3704fe8a3a1e613ea7616e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.EnemySpawnStrategy
-  _percentageOfEnemyCountPullSize: 0.2
+  _percentageOfEnemyCountPullSize: 0.25
   _enemyInitialPoints:
   - {fileID: 55588026840958655}
   - {fileID: 4050340431969138477}
