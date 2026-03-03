@@ -1,5 +1,4 @@
-﻿using System;
-using CommonLogic.Conditions;
+﻿using CommonLogic.Conditions;
 using CommonLogic.StateMachine_States;
 using CommonLogic.StateMachine_States.States;
 using DamageModule;

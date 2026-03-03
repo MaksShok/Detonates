@@ -1,9 +1,10 @@
-﻿using EnemyModule;
+﻿using System;
+using EnemyModule;
 using UnityEngine;
 
 namespace LevelModule
 {
-    [CreateAssetMenu(menuName = "ScriptableObjects", fileName = "BattleConfig")]
+    [CreateAssetMenu(menuName = "ScriptableObjects/BattleConfig", fileName = "BattleConfig")]
     public class BattleGenerationConfig : ScriptableObject
     {
         [field: SerializeField] 
@@ -15,6 +16,7 @@ namespace LevelModule
         [field: SerializeField]
         public WaveInfo[] WaveInfos { get; private set; }
 
+        [Serializable]
         public struct WaveInfo
         {
             [field: SerializeField]
@@ -26,7 +28,8 @@ namespace LevelModule
             [field: SerializeField]
             public InteractableItems[] InteractableItems { get; private set; }
         }
-
+    
+        [Serializable]
         public struct EnemySpawnInfo
         {
             [field: SerializeField]
@@ -36,6 +39,7 @@ namespace LevelModule
             public int Amount { get; private set; }
         }
     
+        [Serializable]
         public struct InteractableItems
         {
             [field: SerializeField]

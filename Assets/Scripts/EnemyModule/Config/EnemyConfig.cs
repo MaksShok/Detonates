@@ -2,7 +2,7 @@
 
 namespace EnemyModule.Config
 {
-    [CreateAssetMenu(menuName = "ScriptableObjects/", fileName = "EnemyConfig")]
+    [CreateAssetMenu(menuName = "ScriptableObjects/EnemyConfig", fileName = "EnemyConfig")]
     public class EnemyConfig : ScriptableObject 
     {
         [field: SerializeField]

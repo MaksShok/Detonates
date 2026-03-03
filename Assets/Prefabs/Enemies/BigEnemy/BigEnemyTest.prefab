@@ -88,9 +88,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4036425103275949281}
   - component: {fileID: 4636850960511851975}
+  - component: {fileID: 7537944305781833559}
   - component: {fileID: 8739928381660598643}
+  - component: {fileID: 4017353900445822134}
   m_Layer: 0
-  m_Name: EnemyTest
+  m_Name: BigEnemyTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106,7 +108,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.67, y: 0.524, z: 0}
-  m_LocalScale: {x: 1, y: 2.3078, z: 1}
+  m_LocalScale: {x: 1.4832461, y: 2.3078, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4072118252694878227}
@@ -163,7 +165,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
-  m_Color: {r: 0.32239813, g: 0.088900656, b: 0.9748427, a: 1}
+  m_Color: {r: 0.9764706, g: 0.090196095, b: 0.13511516, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -172,6 +174,33 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!50 &7537944305781833559
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3978237160371795587}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!114 &8739928381660598643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,6 +214,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthModule.DamageProvider
   _trigger: {fileID: 8162228488389347040}
+--- !u!114 &4017353900445822134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3978237160371795587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 167dc59260c64f0993d4139c2e5e3e2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyModule.EnemyBehavior
+  _rb: {fileID: 7537944305781833559}
+  _config: {fileID: 11400000, guid: 7a1093a43b4fa0e4eb3c602731e49b24, type: 2}
 --- !u!1 &4578848466168970043
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +238,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4072118252694878227}
   - component: {fileID: 3070917963407015893}
-  - component: {fileID: 2851176666552884563}
   m_Layer: 0
   m_Name: PhisycsCollider
   m_TagString: Untagged
@@ -264,30 +306,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 0.2304118}
   m_EdgeRadius: 0
---- !u!50 &2851176666552884563
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4578848466168970043}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0

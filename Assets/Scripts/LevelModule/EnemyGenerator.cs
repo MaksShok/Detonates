@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using EnemyModule;
 using Factory;
-using LevelModule;
 using UnityEngine;
 
-namespace EnemyModule
+namespace LevelModule
 {
     public class EnemyGenerator : MonoBehaviour
     {
-        [Header("Настройки пула врагов")]
         [SerializeField] [Range(0, 1f)]
         private float _percentageOfEnemyCountPullSize;
-        [SerializeField] [Range(1, 100)]
-        private int _expansionSize;
-    
-        [Header("Точки генерации врагов")]
+
         [SerializeField] 
         private Transform[] _enemyInitialPoints;
 
