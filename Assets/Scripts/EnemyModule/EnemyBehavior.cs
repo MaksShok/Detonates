@@ -1,0 +1,44 @@
+﻿using System;
+using DefaultNamespace;
+using HealthModule;
+using UnityEngine;
+
+namespace EnemyModule
+{
+    public class EnemyBehavior : MonoBehaviour
+    {
+        [SerializeField] private Rigidbody2D _rb;
+        [SerializeField] private EnemyConfig _config;
+
+        private Transform _towerTransform;
+        private ISpendHealth _towerSpendHealth;
+        private StateMachine _stateMachine;
+
+        public void Initialize(Transform towerTransform, ISpendHealth towerSpendHealth)
+        {
+            _towerTransform = towerTransform;
+            _towerSpendHealth = towerSpendHealth;
+            _stateMachine = new StateMachine();
+            
+            var enemyTowerDamage = new SimpleDamage(_config.Damage);
+            
+            var checkClose = new CheckTwoObjectsClose(transform, towerTransform, 0.5f);
+
+            var followToTowerState = new FollowToPointState(_rb, _towerTransform, _config.MoveSpeed, checkClose);
+            var attackState = new AttackState(enemyTowerDamage, transform, _towerTransform, 
+                _towerSpendHealth, _config.AttackCooldownSec, checkClose);
+            
+            _stateMachine.AddTransition(followToTowerState, attackState, () => checkClose.IsClose);
+        }
+
+        private void Update()
+        {
+            _stateMachine.Update();
+        }
+
+        private void FixedUpdate()
+        {
+            _stateMachine.FixedUpdateState(Time.fixedDeltaTime);
+        }
+    }
+}
