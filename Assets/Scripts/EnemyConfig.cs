@@ -1,0 +1,23 @@
+﻿using UnityEngine;
+
+namespace DefaultNamespace
+{
+    [CreateAssetMenu(menuName = "ScriptableObjects/", fileName = "EnemyConfig")]
+    public class EnemyConfig : ScriptableObject 
+    {
+        [field: SerializeField]
+        public string Name { get; private set; }
+
+        [field: SerializeField]
+        public int Health { get; private set; }
+        
+        [field: SerializeField]
+        public int Damage { get; private set; }
+        
+        [field: SerializeField]
+        public int AttackCooldownSec { get; private set; }
+        
+        [field: SerializeField]
+        public int MoveSpeed { get; private set; }
+    }
+}

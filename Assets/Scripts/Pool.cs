@@ -1,22 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class Pool
 {
     public int AvailableObjectsCount => _pool.Count;
     public int Size => _size;
-    
+
     private Queue<GameObject> _pool = new Queue<GameObject>();
-    private GameObject _prefab;
-    private Transform _сontainer;
+    private Func<GameObject> _factoryAction; 
     private int _size;
-    private int _expansionSize;
-    
-    public Pool(GameObject prefab, int initialSize, int expansionSize = 10, Transform container = null)
+
+    public Pool(Func<GameObject> factoryAction, int initialSize)
     {
-        _prefab = prefab;
-        _expansionSize = expansionSize;
-        _сontainer = container ? container : CreateDefaultContainer();
+        _factoryAction = factoryAction;
 
         InitializePool(initialSize);
     }
@@ -25,25 +23,30 @@ public class Pool
     {
         for (int i = 0; i < initializeSize; i++)
         {
-            GameObject obj = GameObject.Instantiate(_prefab, _сontainer);
-            obj.name = $"{_prefab.name}_Pooled_{i}";
-            obj.SetActive(false);
-
-            _pool.Enqueue(obj);
+            CreateObject();
         }
+    }
 
-        _size = initializeSize;
-        Debug.Log($"Пул '{_prefab.name}' создан: {initializeSize} объектов");
+    public void CreateObject()
+    {
+        GameObject obj = _factoryAction?.Invoke();
+        if (obj == null)
+            return;
+        
+        obj.SetActive(false);
+        _pool.Enqueue(obj);
+        
+        _size += 1;
     }
 
     public GameObject GetObject()
     {
         if (_pool.Count == 0)
         {
-            ExpandPool(_expansionSize);
+            CreateObject();
         }
 
-        GameObject obj = _pool.Dequeue();
+        var obj = _pool.Dequeue();
         obj.SetActive(true);
 
         return obj;
@@ -51,50 +54,24 @@ public class Pool
 
     public void ReturnObject(GameObject obj)
     {
-        if (obj == null) 
+        if (obj == null)
             return;
-        
-        obj.transform.SetParent(_сontainer);
-        obj.SetActive(false);
 
         _pool.Enqueue(obj);
-    }
-
-    public void ExpandPool(int count)
-    {
-        Debug.Log($"Расширение пула '{_prefab.name}': +{count} объектов (было: {_pool.Count})");
-
-        for (int i = 0; i < count; i++)
-        {
-            GameObject obj = GameObject.Instantiate(_prefab, _сontainer);
-            obj.name = $"{_prefab.name}_Pooled_{_pool.Count}";
-            obj.SetActive(false);
-
-            _pool.Enqueue(obj);
-        }
-
-        _size += count;
-        Debug.Log($"Пул '{_prefab.name}' расширен. Теперь: {_pool.Count} объектов");
+        obj.SetActive(false);
     }
 
     public void Clear()
     {
         while (_pool.Count > 0)
         {
-            GameObject obj = _pool.Dequeue();
+            var obj = _pool.Dequeue();
             if (obj != null)
             {
-                GameObject.Destroy(obj);
+                Object.Destroy(obj.gameObject);
             }
         }
 
         _size = 0;
-    }
-
-    private Transform CreateDefaultContainer()
-    {
-        GameObject containerObj = new GameObject($"Pool_{_prefab.name}");
-        containerObj.hideFlags = HideFlags.NotEditable;
-        return containerObj.transform;
     }
 }
