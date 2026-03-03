@@ -4,16 +4,16 @@ using LevelModule;
 public class GameLoop
 {
     private readonly ICoroutineRunner _coroutineRunner;
-    private readonly EnemyGenerator _enemyGenerator;
+    private readonly EnemyWaveGenerator _enemyWaveGenerator;
 
-    public GameLoop(ICoroutineRunner coroutineRunner, EnemyGenerator enemyGenerator)
+    public GameLoop(ICoroutineRunner coroutineRunner, EnemyWaveGenerator enemyWaveGenerator)
     {
         _coroutineRunner = coroutineRunner;
-        _enemyGenerator = enemyGenerator;
+        _enemyWaveGenerator = enemyWaveGenerator;
     }
 
     public void StartGame()
     {
-        _enemyGenerator.StopGeneration();
+        _enemyWaveGenerator.StopGeneration();
     }
 }

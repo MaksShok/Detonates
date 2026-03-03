@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7924194033441014356}
   - component: {fileID: 8162228488389347040}
+  - component: {fileID: 8546920676553121904}
   m_Layer: 0
   m_Name: DamageTrigger
   m_TagString: Untagged
@@ -78,6 +79,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.0540929, y: 0.9921869}
   m_EdgeRadius: 0
+--- !u!114 &8546920676553121904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3115530047379036087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ee9208d47244138a9594d893841b76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageModule.DamageProvider.PhysicalDamageProvider
+  _trigger: {fileID: 8162228488389347040}
 --- !u!1 &3978237160371795587
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,7 +103,6 @@ GameObject:
   - component: {fileID: 4036425103275949281}
   - component: {fileID: 4636850960511851975}
   - component: {fileID: 5294957384422611889}
-  - component: {fileID: 8739928381660598643}
   - component: {fileID: 6068824835318440716}
   m_Layer: 0
   m_Name: SmallEnemyTest
@@ -201,19 +214,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &8739928381660598643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3978237160371795587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61ee9208d47244138a9594d893841b76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthModule.DamageProvider
-  _trigger: {fileID: 8162228488389347040}
 --- !u!114 &6068824835318440716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 167dc59260c64f0993d4139c2e5e3e2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyModule.EnemyBehavior
+  _damageProvider: {fileID: 8546920676553121904}
   _rb: {fileID: 5294957384422611889}
   _config: {fileID: 11400000, guid: 304553d14b6285c48841d2b4adcdaf63, type: 2}
 --- !u!1 &4578848466168970043

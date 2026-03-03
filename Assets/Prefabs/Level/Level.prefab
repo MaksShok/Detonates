@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8073267917805960370}
   - component: {fileID: 8183195465570806670}
   m_Layer: 0
-  m_Name: EnemiesGenerator
+  m_Name: EnemyGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,6 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1003397243614552402}
+  - {fileID: 5015008663562600217}
   m_Father: {fileID: 1525075584323059514}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8183195465570806670
@@ -45,12 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c17b4ddef3704fe8a3a1e613ea7616e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.EnemySpawnStrategy
-  _percentageOfEnemyCountPullSize: 0.15
+  _percentageOfEnemyCountPullSize: 0.2
   _enemyInitialPoints:
   - {fileID: 55588026840958655}
   - {fileID: 4050340431969138477}
   - {fileID: 3525002635237726752}
   - {fileID: 5027399583542451971}
+  _enemyContainer: {fileID: 5015008663562600217}
 --- !u!1 &3380118982351919122
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,8 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModule.LevelModel
   <TowerTransform>k__BackingField: {fileID: 6471220411006641541}
   <TowerHealth>k__BackingField: 100
-  <EnemyGenerator>k__BackingField: {fileID: 8183195465570806670}
-  <BattleConfig>k__BackingField: {fileID: 11400000, guid: c4d47eed868725f4382d34a1271a2ba3, type: 2}
+  <EnemyWaveGenerator>k__BackingField: {fileID: 8183195465570806670}
 --- !u!1 &4655338182577651520
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,6 +318,37 @@ Transform:
   - {fileID: 4050340431969138477}
   - {fileID: 3525002635237726752}
   - {fileID: 5027399583542451971}
+  m_Father: {fileID: 8073267917805960370}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5208406716745916977
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5015008663562600217}
+  m_Layer: 0
+  m_Name: EnemyContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5015008663562600217
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5208406716745916977}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 8073267917805960370}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6636153829327260494

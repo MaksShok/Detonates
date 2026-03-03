@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LevelModule
 {
-    public class EnemyGenerator : MonoBehaviour
+    public class EnemyWaveGenerator : MonoBehaviour
     {
         [SerializeField] [Range(0, 1f)]
         private float _percentageOfEnemyCountPullSize;
@@ -15,20 +15,21 @@ namespace LevelModule
         [SerializeField] 
         private Transform[] _enemyInitialPoints;
 
-        public event Action<GameObject> OnEnemySpawned;
-        public event Action OnWaveCompleted;
+        [SerializeField] 
+        private Transform _enemyContainer;
+
         public event Action<int, int> OnWaveProgress; // spawned, total
     
         public bool IsGenerating => _generateProcess != null;
 
-        private Dictionary<string, Pool> _enemyPools;
-        private Coroutine _generateProcess;
         private BattleGenerationConfig _battleConfig;
         private EnemyFactory _enemyFactory;
-        private int _currentSpawnPointIndex;
+        
+        private Dictionary<string, Pool> _enemyPools;
+        private Coroutine _generateProcess;
         private Transform _currentInitialPointRef;
-    
-        private int _totalEnemies; // из LevelConfigReader
+        private int _currentSpawnPointIndex;
+        private int _totalEnemies;
 
         public void Initialize(BattleGenerationConfig battleConfig, EnemyFactory enemyFactory)
         {
@@ -60,25 +61,28 @@ namespace LevelModule
             // -------
         
             _enemyPools = new Dictionary<string, Pool>();
+            _currentInitialPointRef = _enemyInitialPoints[_currentSpawnPointIndex];
             foreach (var concreteEnemyAmount in enemyAmountDict)
             { 
                 string nameKey = concreteEnemyAmount.Key;
                 EnemyBehavior prefab = concreteEnemyAmount.Value.prefab;
-                int initialSize = Mathf.FloorToInt(concreteEnemyAmount.Value.amount * _percentageOfEnemyCountPullSize);
+                int initialSize = Mathf.CeilToInt(concreteEnemyAmount.Value.amount * _percentageOfEnemyCountPullSize);
 
                 Func<GameObject> createEnemyFunc = () => _enemyFactory.Create(
-                    prefab, _currentInitialPointRef.position, Quaternion.identity, transform, nameKey).gameObject;
+                    prefab, _currentInitialPointRef.position, Quaternion.identity, _enemyContainer, nameKey).gameObject;
             
                 _enemyPools.Add(nameKey, new Pool(createEnemyFunc, initialSize));
                 Debug.Log($"Пул для '{nameKey}': {initialSize} / {concreteEnemyAmount.Value.amount} объектов ({_percentageOfEnemyCountPullSize:P0})");
             }
         }
 
-        public void StartGenerateWaveProcess(float duration, BattleGenerationConfig.EnemySpawnInfo[] enemySpawnInfos)
+        public Coroutine StartGenerateWaveProcess(float duration, BattleGenerationConfig.EnemySpawnInfo[] enemySpawnInfos)
         {
             StopGeneration();
             _generateProcess = StartCoroutine(GenerateEnemyCoroutine(duration, enemySpawnInfos));
+            return _generateProcess;
         }
+        
     
         public void StopGeneration()
         {
@@ -94,7 +98,6 @@ namespace LevelModule
             if (_totalEnemies == 0 || duration <= 0f)
             {
                 Debug.LogWarning("Нет врагов для генерации или длительность волны равна 0");
-                OnWaveCompleted?.Invoke();
                 yield break;
             }
     
@@ -118,7 +121,6 @@ namespace LevelModule
                 GameObject enemy = pool.GetObject();
                 enemy.transform.position = spawnPosition;
                 enemy.transform.rotation = spawnPoint.rotation;
-                OnEnemySpawned?.Invoke(enemy);
             
                 totalSpawned++;
                 OnWaveProgress?.Invoke(totalSpawned, _totalEnemies);
@@ -128,7 +130,6 @@ namespace LevelModule
     
             //тут должна быть логика --> дожидаемся когда все враги умрут
         
-            OnWaveCompleted?.Invoke();
             print("Волна закончилась");
         }
 

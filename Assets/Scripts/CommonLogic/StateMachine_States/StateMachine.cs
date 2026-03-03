@@ -7,11 +7,11 @@ namespace CommonLogic.StateMachine_States
 {
     public class StateMachine
     {
-        private static readonly List<StateTransition> EmptyCollection = new List<StateTransition>();
+        private static readonly List<StateTransition> EmptyCollection = new ();
     
         private IState _currentState;
-        private List<StateTransition> _currentTransitions;
-        private Dictionary<Type, List<StateTransition>> _transitionMap = new Dictionary<Type, List<StateTransition>>();
+        private List<StateTransition> _currentTransitions = new ();
+        private Dictionary<Type, List<StateTransition>> _transitionMap = new ();
 
         public void Update()
         {
@@ -52,9 +52,9 @@ namespace CommonLogic.StateMachine_States
         {
             if (!_transitionMap.TryGetValue(fromState.GetType(), out var transitions))
             {
-                List<StateTransition> newTransitions = new List<StateTransition>();
-                newTransitions.Add(new StateTransition(toState, predicate));
-                _transitionMap.Add(fromState.GetType(), newTransitions);
+                transitions = new List<StateTransition>();
+                transitions.Add(new StateTransition(toState, predicate));
+                _transitionMap.Add(fromState.GetType(), transitions);
             }
         
             transitions.Add(new StateTransition(toState, predicate));

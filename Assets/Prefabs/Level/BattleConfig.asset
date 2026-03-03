@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 834e89610c6540d0960bbde0a8779ddc, type: 3}
   m_Name: BattleConfig
   m_EditorClassIdentifier: Assembly-CSharp::LevelModule.BattleGenerationConfig
-  <IsLoopLastWave>k__BackingField: 0
+  <IsLoopLastWave>k__BackingField: 1
   <WaveCooldownTimeSec>k__BackingField: 0
   <WaveInfos>k__BackingField:
   - <Duration>k__BackingField: 10
