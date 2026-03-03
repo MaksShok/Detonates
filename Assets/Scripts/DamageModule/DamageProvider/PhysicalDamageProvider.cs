@@ -1,7 +1,7 @@
 ﻿using HealthModule;
 using UnityEngine;
 
-namespace DamageProvider
+namespace DamageModule.DamageProvider
 {
     public class PhysicalDamageProvider : MonoBehaviour
     {

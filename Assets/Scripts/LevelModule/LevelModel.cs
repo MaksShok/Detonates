@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using EnemyModule;
+using UnityEngine;
 
-namespace DefaultNamespace
+namespace LevelModule
 {
     public class LevelModel : MonoBehaviour
     {

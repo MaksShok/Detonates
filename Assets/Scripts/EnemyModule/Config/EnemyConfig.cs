@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DefaultNamespace
+namespace EnemyModule.Config
 {
     [CreateAssetMenu(menuName = "ScriptableObjects/", fileName = "EnemyConfig")]
     public class EnemyConfig : ScriptableObject 

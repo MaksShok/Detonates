@@ -1,7 +1,7 @@
-﻿using DefaultNamespace;
+﻿using CommonLogic.Conditions;
 using UnityEngine;
 
-namespace EnemyModule
+namespace CommonLogic.StateMachine_States.States
 {
     public class FollowToPointState : IState
     {

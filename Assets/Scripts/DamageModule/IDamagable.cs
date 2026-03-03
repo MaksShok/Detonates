@@ -1,4 +1,6 @@
-﻿namespace HealthModule
+﻿using HealthModule;
+
+namespace DamageModule
 {
     public interface IDamagable
     {

@@ -1,8 +1,9 @@
-﻿using DefaultNamespace;
+﻿using CommonLogic.Conditions;
+using DamageModule;
 using HealthModule;
 using UnityEngine;
 
-namespace EnemyModule
+namespace CommonLogic.StateMachine_States.States
 {
     public class AttackState : IState
     {

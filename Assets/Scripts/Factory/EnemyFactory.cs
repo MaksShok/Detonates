@@ -2,7 +2,7 @@
 using HealthModule;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Factory
 {
     public interface IFactory<T> where T : Object
     {

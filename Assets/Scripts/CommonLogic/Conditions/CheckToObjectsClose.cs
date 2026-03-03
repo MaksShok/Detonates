@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DefaultNamespace
+namespace CommonLogic.Conditions
 {
     public class CheckTwoObjectsClose
     {

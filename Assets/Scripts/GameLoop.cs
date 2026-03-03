@@ -1,4 +1,6 @@
-﻿public class GameLoop
+﻿using EnemyModule;
+
+public class GameLoop
 {
     private readonly ICoroutineRunner _coroutineRunner;
     private readonly EnemyGenerator _enemyGenerator;

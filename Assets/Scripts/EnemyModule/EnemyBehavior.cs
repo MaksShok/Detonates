@@ -1,5 +1,9 @@
 ﻿using System;
-using DefaultNamespace;
+using CommonLogic.Conditions;
+using CommonLogic.StateMachine_States;
+using CommonLogic.StateMachine_States.States;
+using DamageModule;
+using EnemyModule.Config;
 using HealthModule;
 using UnityEngine;
 
@@ -29,6 +33,8 @@ namespace EnemyModule
                 _towerSpendHealth, _config.AttackCooldownSec, checkClose);
             
             _stateMachine.AddTransition(followToTowerState, attackState, () => checkClose.IsClose);
+            _stateMachine.AddTransition(attackState, followToTowerState, () => !checkClose.IsClose);
+            _stateMachine.SetState(followToTowerState);
         }
 
         private void Update()
