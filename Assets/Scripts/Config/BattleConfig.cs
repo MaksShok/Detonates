@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace;
+using EnemyModule;
+using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/", fileName = "LevelConfig")]
-public class LevelConfig : ScriptableObject
+[CreateAssetMenu(menuName = "ScriptableObjects", fileName = "BattleConfig")]
+public class BattleGenerationConfig : ScriptableObject
 {
     [field: SerializeField] 
     public bool IsLoopLastWave { get; private set; }
@@ -27,7 +29,7 @@ public class LevelConfig : ScriptableObject
     public struct EnemySpawnInfo
     {
         [field: SerializeField]
-        public GameObject EnemyPrefab { get; private set; }
+        public EnemyBehavior EnemyBehaviorPrefab { get; private set; }
         
         [field: SerializeField]
         public int Amount { get; private set; }
