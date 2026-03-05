@@ -1,7 +1,7 @@
-﻿using HealthModule;
+﻿using DamageModule;
 using UnityEngine;
 
-namespace DamageModule.DamageProvider
+namespace HealthModule.CollisionHealthProvider
 {
     public class CollisionHealthProvider : MonoBehaviour
     {

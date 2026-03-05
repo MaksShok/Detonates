@@ -1,4 +1,4 @@
-﻿using EnemyModule;
+﻿using System;
 using Factory;
 using HealthModule;
 using LevelModule;
@@ -12,15 +12,15 @@ public class EntryPoint : MonoBehaviour, ICoroutineRunner
     private BattleGenerationConfig _battleConfig;
 
     private GameLoop _gameLoop;
-    private EnemyWaveGenerator _enemyWaveGenerator;
-        
+    private WaveGenerator _waveGenerator;
+
     private void Start()
     {
         // открытие шторки загрузки
         LoadSave();
         Initialization();
 
-        StartCoroutine(_gameLoop.StartGame());
+        _gameLoop.StartGameProcess();
     }
 
     private void Initialization()
@@ -28,10 +28,10 @@ public class EntryPoint : MonoBehaviour, ICoroutineRunner
         HealthModel towerHealth = new HealthModel(_levelModel.TowerHealth);
         EnemyFactory enemyFactory = new EnemyFactory(_levelModel.TowerTransform, towerHealth);
 
-        _enemyWaveGenerator = _levelModel.EnemyWaveGenerator;
-        _enemyWaveGenerator.Initialize(_battleConfig, enemyFactory); // возможно делать асинхронно, хз
+        _waveGenerator = _levelModel.WaveGenerator;
+        _waveGenerator.Initialize(_battleConfig.WaveInfos, enemyFactory); // возможно делать асинхронно, хз
             
-        _gameLoop = new GameLoop(this, _enemyWaveGenerator, _battleConfig);
+        _gameLoop = new GameLoop(this, _waveGenerator, _battleConfig, towerHealth);
     }
 
     private void LoadSave() { }

@@ -11,9 +11,6 @@ namespace CommonLogic.StateMachine_States.States
         private readonly Transform _targetPoint;
         private readonly float _moveSpeed;
         private readonly CheckTwoObjectsClose _checkClose;
-        
-        private Vector2 _startPosition;
-        private float _totalDistance;
 
         public FollowToPointState(Rigidbody2D rb, Transform targetPoint, float moveSpeed, CheckTwoObjectsClose checkClose)
         {
@@ -25,8 +22,6 @@ namespace CommonLogic.StateMachine_States.States
 
         public void Enter()
         {
-            _startPosition = _rb.position;
-            _totalDistance = Vector2.Distance(_targetPoint.position, _startPosition);
         }
 
         public void Exit() { }
@@ -36,16 +31,27 @@ namespace CommonLogic.StateMachine_States.States
             if (_checkClose.IsClose)
                 return;
             
-            Vector2 direction = ((Vector2)_targetPoint.position - _rb.position).normalized;
-            Vector2 newPosition = _rb.position + direction * _moveSpeed * fixedDeltaTime;
-            
-            if (Vector2.Distance(newPosition, _startPosition) > _totalDistance)
+            Vector2 currentPosition = _rb.position;
+            Vector2 toTarget = (Vector2)_targetPoint.position - currentPosition;
+            float distanceToTarget = toTarget.magnitude;
+
+            if (distanceToTarget <= 0f)
+                return;
+
+            float maxStep = _moveSpeed * fixedDeltaTime;
+            Vector2 step;
+
+            if (maxStep >= distanceToTarget)
             {
-                newPosition = _targetPoint.position;
+                step = toTarget;
             }
-            
+            else
+            {
+                step = toTarget.normalized * maxStep;
+            }
+
+            Vector2 newPosition = currentPosition + step;
             _rb.MovePosition(newPosition);
-            _rb.transform.LookAt(_targetPoint);
         }
 
         public void Update(float deltaTime) { }

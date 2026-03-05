@@ -1,7 +1,6 @@
 ﻿using CommonLogic.Conditions;
 using DamageModule;
 using HealthModule;
-using UnityEngine;
 
 namespace CommonLogic.StateMachine_States.States
 {
@@ -9,9 +8,7 @@ namespace CommonLogic.StateMachine_States.States
     {
         public bool CanExit => !_spendHealth.Alive || !_checkClose.IsClose;
 
-        private readonly IDamagable _damagable;
-        private readonly Transform _transform;
-        private readonly Transform _target;
+        private readonly IDamageProvider _damageProvider;
         private readonly ISpendHealth _spendHealth;
         private readonly float _attackCooldown;
         private readonly CheckTwoObjectsClose _checkClose;
@@ -19,12 +16,10 @@ namespace CommonLogic.StateMachine_States.States
         private float _distanceToTarget;
         private float _timeSinceFromLastAttack;
 
-        public AttackState(IDamagable damagable, Transform transform, Transform target, 
-            ISpendHealth spendHealth, float attackCooldown, CheckTwoObjectsClose checkClose)
+        public AttackState(IDamageProvider damageProvider, ISpendHealth spendHealth, 
+            float attackCooldown, CheckTwoObjectsClose checkClose)
         {
-            _damagable = damagable;
-            _transform = transform;
-            _target = target;
+            _damageProvider = damageProvider;
             _spendHealth = spendHealth;
             _attackCooldown = attackCooldown;
             _checkClose = checkClose;
@@ -42,7 +37,7 @@ namespace CommonLogic.StateMachine_States.States
             // если куллдаун атаки прошел и мы рядом с противником то бъем его
             if (_timeSinceFromLastAttack >= _attackCooldown && _checkClose.IsClose)
             {
-                _damagable.ApplyDamage(_spendHealth);
+                _damageProvider.ApplyDamage(_spendHealth);
                 _timeSinceFromLastAttack = 0;
             }
         }

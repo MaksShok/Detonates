@@ -1,11 +1,16 @@
 ﻿using System;
 using HealthModule;
 
-namespace DamageModule
+namespace DamageModule.DamageProvider
 {
     public class SimpleDamageProvider : IDamageProvider
     {
         public int Damage { get; private set; }
+
+        public SimpleDamageProvider(int defaultValue = 0)
+        {
+            Damage = Math.Max(0, defaultValue);
+        }
         
         public void ApplyDamage(ISpendHealth health)
         {

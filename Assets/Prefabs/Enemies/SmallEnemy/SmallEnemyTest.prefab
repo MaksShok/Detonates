@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 167dc59260c64f0993d4139c2e5e3e2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyModule.EnemyBehavior
-  _damageProvider: {fileID: 8546920676553121904}
+  _collisionHealthProvider: {fileID: 8546920676553121904}
   _rb: {fileID: 5294957384422611889}
   _config: {fileID: 11400000, guid: 304553d14b6285c48841d2b4adcdaf63, type: 2}
 --- !u!1 &4578848466168970043

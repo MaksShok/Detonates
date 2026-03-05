@@ -12,6 +12,6 @@ namespace LevelModule
         public int TowerHealth { get; private set; }
         
         [field: SerializeField] 
-        public EnemyWaveGenerator EnemyWaveGenerator { get; private set; }
+        public WaveGenerator WaveGenerator { get; private set; }
     }
 }

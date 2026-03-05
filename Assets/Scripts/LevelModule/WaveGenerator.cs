@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using EnemyModule;
 using Factory;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace LevelModule
@@ -17,24 +18,22 @@ namespace LevelModule
 
         [SerializeField] 
         private Transform _enemyContainer;
-
-        public event Action<int, int> OnWaveProgress; // spawned, total
-
-        private EnemyFactory _enemyFactory;
         
-        private Dictionary<string, Pool<EnemyBehavior>> _enemyPools = new ();
+        private EnemyFactory _enemyFactory;
         private Coroutine _generateProcess;
-        private int _currentSpawnPointIndex;
-        private int _totalEnemies;
-        private int _aliveEnemiesInWave;
 
-        public void Initialize(EnemyFactory enemyFactory)
+        private Dictionary<string, Pool<EnemyBehavior>> _enemyPools = new ();
+        private Dictionary<string, EnemyGenerator> _enemyGenerators = new ();
+
+        public void Initialize(BattleGenerationConfig.WaveInfo[] waveInfos, EnemyFactory enemyFactory)
         {
             _enemyFactory = enemyFactory;
 
-            // ----- обработку конфига нужно вынести в LevelConfigReader
+            ClearAllPools();
+
+            int totalEnemies = 0;
             var enemyAmountDict = new Dictionary<string, (int amount, EnemyBehavior prefab)>();
-            foreach (var waveInfo in _battleConfig.WaveInfos)
+            foreach (var waveInfo in waveInfos)
             {
                 foreach (var enemyInfo in waveInfo.EnemiesSpawnInfo)
                 {
@@ -42,7 +41,7 @@ namespace LevelModule
                         continue;
                 
                     string enemyName = enemyInfo.EnemyBehavior.name;
-                    _totalEnemies += enemyInfo.Amount; // из LevelConfigReader
+                    totalEnemies += enemyInfo.Amount;
                     if (!enemyAmountDict.ContainsKey(enemyName))
                     {
                         enemyAmountDict.Add(enemyName, (enemyInfo.Amount, enemyInfo.EnemyBehavior));
@@ -51,10 +50,10 @@ namespace LevelModule
                     {
                         var concreteEnemyAmount = enemyAmountDict[enemyName];
                         concreteEnemyAmount.amount += enemyInfo.Amount;
+                        enemyAmountDict[enemyName] = concreteEnemyAmount;
                     }
                 }
             }
-            // -------
         
             foreach (var concreteEnemyAmount in enemyAmountDict)
             { 
@@ -63,14 +62,11 @@ namespace LevelModule
                 int initialSize = Mathf.CeilToInt(concreteEnemyAmount.Value.amount * _percentageOfEnemyCountPullSize);
 
                 Func<EnemyBehavior> createEnemyFunc = () =>
-                {
-                    var enemy = _enemyFactory.Create(prefab, Vector3.zero, Quaternion.identity, _enemyContainer,
-                            nameKey);
-                    
-                    return enemy;
-                };
-            
-                _enemyPools.Add(nameKey, new Pool<EnemyBehavior>(createEnemyFunc, initialSize));
+                    _enemyFactory.Create(prefab, Vector3.zero, Quaternion.identity, _enemyContainer, nameKey);
+
+                var pool = new Pool<EnemyBehavior>(createEnemyFunc, initialSize);
+                _enemyPools.Add(nameKey, pool);
+                _enemyGenerators.Add(nameKey, new EnemyGenerator(pool, _enemyInitialPoints));
                 Debug.Log($"Пул для '{nameKey}': {initialSize} / {concreteEnemyAmount.Value.amount} объектов ({_percentageOfEnemyCountPullSize:P0})");
             }
         }
@@ -78,7 +74,7 @@ namespace LevelModule
         public Coroutine StartGenerateWaveProcess(float duration, BattleGenerationConfig.EnemySpawnInfo[] enemySpawnInfos)
         {
             StopGeneration();
-            _generateProcess = StartCoroutine(GenerateEnemyCoroutine(duration, enemySpawnInfos));
+            _generateProcess = StartCoroutine(GenerateWaveCoroutine(duration, enemySpawnInfos));
             return _generateProcess;
         }
 
@@ -91,131 +87,49 @@ namespace LevelModule
             }
         }
 
-        private IEnumerator GenerateEnemyCoroutine(float duration, BattleGenerationConfig.EnemySpawnInfo[] enemySpawnInfos)
+        private IEnumerator GenerateWaveCoroutine(float duration, BattleGenerationConfig.EnemySpawnInfo[] enemySpawnInfos)
         {
-            if (enemySpawnInfos == null || enemySpawnInfos.Length == 0 || duration <= 0f)
+            if (enemySpawnInfos == null || enemySpawnInfos.Length == 0)
+                 yield break;
+
+            List<Coroutine> coroutines = new ();
+            foreach (var spawnInfo in enemySpawnInfos)
             {
-                Debug.LogWarning("Нет врагов для генерации или длительность волны равна 0");
-                yield break;
+                string nameKey = spawnInfo.EnemyBehavior.name;
+                var enemyGenerator = _enemyGenerators[nameKey];
+                coroutines.Add(StartCoroutine(enemyGenerator.Generate(spawnInfo.Amount, duration)));
             }
-    
-            int enemiesInWave = 0;
-            for (int i = 0; i < enemySpawnInfos.Length; i++)
-            {
-                enemiesInWave += Mathf.Max(0, enemySpawnInfos[i].Amount);
-            }
-
-            if (enemiesInWave == 0)
-            {
-                Debug.LogWarning("В текущей волне количество врагов равно 0");
-                yield break;
-            }
-
-            int totalSpawned = 0;
-            _aliveEnemiesInWave = 0;
-
-            var spawnedPerType = new int[enemySpawnInfos.Length];
-            float elapsed = 0f;
-
-            while (totalSpawned < enemiesInWave)
-            {
-                int chosenIndex = -1;
-                float chosenTime = float.PositiveInfinity;
-
-                for (int i = 0; i < enemySpawnInfos.Length; i++)
-                {
-                    int amount = Mathf.Max(0, enemySpawnInfos[i].Amount);
-
-                    if (spawnedPerType[i] >= amount)
-                        continue;
-
-                    float nextTime = (spawnedPerType[i] + 1) * (duration / amount);
-                    if (nextTime < chosenTime)
-                    {
-                        chosenTime = nextTime;
-                        chosenIndex = i;
-                    }
-                }
-
-                if (chosenIndex < 0)
-                {
-                    Debug.LogWarning("Не удалось выбрать врага для спавна: проверь EnemySpawnInfo в конфиге");
-                    break;
-                }
-
-                float waitTime = chosenTime - elapsed;
-                if (waitTime > 0f)
-                {
-                    yield return new WaitForSeconds(waitTime);
-                    elapsed = chosenTime;
-                }
-
-                EnemyBehavior prefab = enemySpawnInfos[chosenIndex].EnemyBehavior;
-                string enemyName = prefab.name;
+            // Ждем, пока идет генерация
+            foreach (var coroutine in coroutines) 
+                yield return coroutine;
             
-                if (!_enemyPools.TryGetValue(enemyName, out var pool))
-                {
-                    Debug.LogError($"Пул для врага '{enemyName}' не найден!");
-                    continue;
-                }
-    
-                Transform spawnPoint = GetNextSpawnPoint();
-                EnemyBehavior enemy = pool.GetObject();
-                enemy.ResetForReuse();
-                enemy.Died -= OnEnemyDied;
-                enemy.Died += OnEnemyDied;
-                enemy.transform.position = spawnPoint.position;
-                enemy.transform.rotation = spawnPoint.rotation;
-                _aliveEnemiesInWave++;
-                
-                spawnedPerType[chosenIndex]++;
-                totalSpawned++;
-                OnWaveProgress?.Invoke(totalSpawned, enemiesInWave);
-            }
-    
-            while (_aliveEnemiesInWave > 0)
+            // Тут ждем, что все сгенерированные объекты умерли (вернулись в пул)
+            foreach (var dictElement in _enemyGenerators)
             {
-                yield return null;
+                var generator = dictElement.Value;
+                yield return new WaitUntil(() => generator.ObjectsOnScene == 0);
             }
-
-            print("Волна закончилась");
-        }
-        
-        
-
-        private Transform GetNextSpawnPoint()
-        {
-            Transform point = _enemyInitialPoints[_currentSpawnPointIndex];
-            _currentSpawnPointIndex = (_currentSpawnPointIndex + 1) % _enemyInitialPoints.Length;
-            return point;
         }
 
         public void ClearAllPools()
         {
+            StopGeneration();
+
             foreach (var pool in _enemyPools.Values)
             {
                 pool.Clear();
             }
+
             _enemyPools.Clear();
+            _enemyGenerators.Clear();
         }
-
-        private void OnEnemyDied(EnemyBehavior enemy)
+        
+        [ContextMenu("Убить всех врагов")] //---Test---
+        public void KillAllAliveEnemies() 
         {
-            if (enemy == null)
-                return;
-
-            if (_enemyPools.TryGetValue(enemy.name, out var pool))
+            foreach (var generator in _enemyGenerators.Values)
             {
-                pool.ReturnObject(enemy);
-            }
-            else
-            {
-                Debug.LogWarning($"Не найден пул для врага с именем '{enemy.name}' при возврате в пул");
-            }
-
-            if (_aliveEnemiesInWave > 0)
-            {
-                _aliveEnemiesInWave--;
+                generator.KillAllAlive();
             }
         }
     }

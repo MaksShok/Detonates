@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8073267917805960370}
   - component: {fileID: 8183195465570806670}
   m_Layer: 0
-  m_Name: EnemyGenerator
+  m_Name: WaveGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -193,7 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModule.LevelModel
   <TowerTransform>k__BackingField: {fileID: 6471220411006641541}
   <TowerHealth>k__BackingField: 100
-  <EnemyWaveGenerator>k__BackingField: {fileID: 8183195465570806670}
+  <WaveGenerator>k__BackingField: {fileID: 8183195465570806670}
 --- !u!1 &4655338182577651520
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,27 +1,37 @@
-﻿using System;
-using ReactivePR;
-using UnityEngine;
+using System;
 
 namespace HealthModule
 {
     public class HealthModel : ISpendHealth
     {
+        public event Action OnDie;
         public bool Alive => Health > 0;
         public int Health { get; private set; }
         
         public HealthModel(int value)
         {
-            Health = Mathf.Max(0, value);
+            Set(value);
         }
 
         public void Spend(int value)
         {
-            Health = Mathf.Max(0, Health - value);
+            Set(Health - value);
         }
 
         public void SetHealth(int value)
         {
-            Health = Mathf.Max(0, value);
+            Set(value);
+        }
+
+        private void Set(int value)
+        {
+            Health = Math.Max(0, value);
+            if (Health == 0) OnDie?.Invoke();   
+        }
+
+        public void ClearAllSubscribers()
+        {
+            OnDie = null;
         }
     }
 }
