@@ -33,7 +33,7 @@ namespace LevelModule
         public struct EnemySpawnInfo
         {
             [field: SerializeField]
-            public EnemyBehavior EnemyBehaviorPrefab { get; private set; }
+            public EnemyBehavior EnemyBehavior { get; private set; }
         
             [field: SerializeField]
             public int Amount { get; private set; }

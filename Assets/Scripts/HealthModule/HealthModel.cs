@@ -1,12 +1,13 @@
-﻿using ReactivePR;
+﻿using System;
+using ReactivePR;
 using UnityEngine;
 
 namespace HealthModule
 {
     public class HealthModel : ISpendHealth
     {
-        public int Health { get; private set; }
         public bool Alive => Health > 0;
+        public int Health { get; private set; }
         
         public HealthModel(int value)
         {
@@ -20,7 +21,7 @@ namespace HealthModule
 
         public void SetHealth(int value)
         {
-            Health = value;
+            Health = Mathf.Max(0, value);
         }
     }
 }

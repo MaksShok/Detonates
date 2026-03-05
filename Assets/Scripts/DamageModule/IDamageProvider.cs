@@ -1,0 +1,26 @@
+﻿using System;
+using HealthModule;
+
+namespace DamageModule
+{
+    public interface IDamageProvider
+    {
+        int Damage { get; }
+        void ApplyDamage(ISpendHealth health);
+    }
+
+    public class SimpleDamageProvider : IDamageProvider
+    {
+        public int Damage { get; private set; }
+        
+        public void ApplyDamage(ISpendHealth health)
+        {
+            health.Spend(Damage);
+        }
+
+        public void SetDamage(int value)
+        {
+            Damage = Math.Max(0, value);
+        }
+    }
+}

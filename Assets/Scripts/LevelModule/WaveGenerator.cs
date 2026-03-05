@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LevelModule
 {
-    public class EnemyWaveGenerator : MonoBehaviour
+    public class WaveGenerator : MonoBehaviour
     {
         [SerializeField] [Range(0, 1f)]
         private float _percentageOfEnemyCountPullSize;
@@ -20,17 +20,16 @@ namespace LevelModule
 
         public event Action<int, int> OnWaveProgress; // spawned, total
 
-        private BattleGenerationConfig _battleConfig;
         private EnemyFactory _enemyFactory;
         
         private Dictionary<string, Pool<EnemyBehavior>> _enemyPools = new ();
         private Coroutine _generateProcess;
         private int _currentSpawnPointIndex;
         private int _totalEnemies;
+        private int _aliveEnemiesInWave;
 
-        public void Initialize(BattleGenerationConfig battleConfig, EnemyFactory enemyFactory)
+        public void Initialize(EnemyFactory enemyFactory)
         {
-            _battleConfig = battleConfig;
             _enemyFactory = enemyFactory;
 
             // ----- обработку конфига нужно вынести в LevelConfigReader
@@ -39,14 +38,14 @@ namespace LevelModule
             {
                 foreach (var enemyInfo in waveInfo.EnemiesSpawnInfo)
                 {
-                    if (enemyInfo.EnemyBehaviorPrefab == null)
+                    if (enemyInfo.EnemyBehavior == null)
                         continue;
                 
-                    string enemyName = enemyInfo.EnemyBehaviorPrefab.name;
+                    string enemyName = enemyInfo.EnemyBehavior.name;
                     _totalEnemies += enemyInfo.Amount; // из LevelConfigReader
                     if (!enemyAmountDict.ContainsKey(enemyName))
                     {
-                        enemyAmountDict.Add(enemyName, (enemyInfo.Amount, enemyInfo.EnemyBehaviorPrefab));
+                        enemyAmountDict.Add(enemyName, (enemyInfo.Amount, enemyInfo.EnemyBehavior));
                     }
                     else
                     {
@@ -94,18 +93,64 @@ namespace LevelModule
 
         private IEnumerator GenerateEnemyCoroutine(float duration, BattleGenerationConfig.EnemySpawnInfo[] enemySpawnInfos)
         {
-            if (_totalEnemies == 0 || duration <= 0f)
+            if (enemySpawnInfos == null || enemySpawnInfos.Length == 0 || duration <= 0f)
             {
                 Debug.LogWarning("Нет врагов для генерации или длительность волны равна 0");
                 yield break;
             }
     
-            float spawnInterval = duration / _totalEnemies;
-            int totalSpawned = 0;
-        
-            while (totalSpawned < _totalEnemies)
+            int enemiesInWave = 0;
+            for (int i = 0; i < enemySpawnInfos.Length; i++)
             {
-                EnemyBehavior prefab = enemySpawnInfos[totalSpawned].EnemyBehaviorPrefab;
+                enemiesInWave += Mathf.Max(0, enemySpawnInfos[i].Amount);
+            }
+
+            if (enemiesInWave == 0)
+            {
+                Debug.LogWarning("В текущей волне количество врагов равно 0");
+                yield break;
+            }
+
+            int totalSpawned = 0;
+            _aliveEnemiesInWave = 0;
+
+            var spawnedPerType = new int[enemySpawnInfos.Length];
+            float elapsed = 0f;
+
+            while (totalSpawned < enemiesInWave)
+            {
+                int chosenIndex = -1;
+                float chosenTime = float.PositiveInfinity;
+
+                for (int i = 0; i < enemySpawnInfos.Length; i++)
+                {
+                    int amount = Mathf.Max(0, enemySpawnInfos[i].Amount);
+
+                    if (spawnedPerType[i] >= amount)
+                        continue;
+
+                    float nextTime = (spawnedPerType[i] + 1) * (duration / amount);
+                    if (nextTime < chosenTime)
+                    {
+                        chosenTime = nextTime;
+                        chosenIndex = i;
+                    }
+                }
+
+                if (chosenIndex < 0)
+                {
+                    Debug.LogWarning("Не удалось выбрать врага для спавна: проверь EnemySpawnInfo в конфиге");
+                    break;
+                }
+
+                float waitTime = chosenTime - elapsed;
+                if (waitTime > 0f)
+                {
+                    yield return new WaitForSeconds(waitTime);
+                    elapsed = chosenTime;
+                }
+
+                EnemyBehavior prefab = enemySpawnInfos[chosenIndex].EnemyBehavior;
                 string enemyName = prefab.name;
             
                 if (!_enemyPools.TryGetValue(enemyName, out var pool))
@@ -116,21 +161,23 @@ namespace LevelModule
     
                 Transform spawnPoint = GetNextSpawnPoint();
                 EnemyBehavior enemy = pool.GetObject();
+                enemy.ResetForReuse();
+                enemy.Died -= OnEnemyDied;
+                enemy.Died += OnEnemyDied;
                 enemy.transform.position = spawnPoint.position;
                 enemy.transform.rotation = spawnPoint.rotation;
+                _aliveEnemiesInWave++;
                 
-                // тут нужно отслеживать здоровье enemy и когда оно равно 0, то возвращать в pool
-            
+                spawnedPerType[chosenIndex]++;
                 totalSpawned++;
-                OnWaveProgress?.Invoke(totalSpawned, _totalEnemies);
-            
-                yield return new WaitForSeconds(spawnInterval);
+                OnWaveProgress?.Invoke(totalSpawned, enemiesInWave);
             }
     
-            //тут должна быть логика --> дожидаемся когда все враги умрут
-            
-            
-        
+            while (_aliveEnemiesInWave > 0)
+            {
+                yield return null;
+            }
+
             print("Волна закончилась");
         }
         
@@ -150,6 +197,26 @@ namespace LevelModule
                 pool.Clear();
             }
             _enemyPools.Clear();
+        }
+
+        private void OnEnemyDied(EnemyBehavior enemy)
+        {
+            if (enemy == null)
+                return;
+
+            if (_enemyPools.TryGetValue(enemy.name, out var pool))
+            {
+                pool.ReturnObject(enemy);
+            }
+            else
+            {
+                Debug.LogWarning($"Не найден пул для врага с именем '{enemy.name}' при возврате в пул");
+            }
+
+            if (_aliveEnemiesInWave > 0)
+            {
+                _aliveEnemiesInWave--;
+            }
         }
     }
 }

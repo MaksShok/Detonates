@@ -17,13 +17,13 @@ MonoBehaviour:
   <WaveInfos>k__BackingField:
   - <Duration>k__BackingField: 10
     <EnemiesSpawnInfo>k__BackingField:
-    - <EnemyBehaviorPrefab>k__BackingField: {fileID: 6068824835318440716, guid: 005f22de2eebfe847b6dd94abeb1ea14, type: 3}
+    - <EnemyBehavior>k__BackingField: {fileID: 6068824835318440716, guid: 005f22de2eebfe847b6dd94abeb1ea14, type: 3}
       <Amount>k__BackingField: 5
     <InteractableItems>k__BackingField: []
   - <Duration>k__BackingField: 15
     <EnemiesSpawnInfo>k__BackingField:
-    - <EnemyBehaviorPrefab>k__BackingField: {fileID: 6068824835318440716, guid: 005f22de2eebfe847b6dd94abeb1ea14, type: 3}
+    - <EnemyBehavior>k__BackingField: {fileID: 6068824835318440716, guid: 005f22de2eebfe847b6dd94abeb1ea14, type: 3}
       <Amount>k__BackingField: 5
-    - <EnemyBehaviorPrefab>k__BackingField: {fileID: 4017353900445822134, guid: e289d555e5eec314cb12b7687cc5307a, type: 3}
+    - <EnemyBehavior>k__BackingField: {fileID: 4017353900445822134, guid: e289d555e5eec314cb12b7687cc5307a, type: 3}
       <Amount>k__BackingField: 5
     <InteractableItems>k__BackingField: []

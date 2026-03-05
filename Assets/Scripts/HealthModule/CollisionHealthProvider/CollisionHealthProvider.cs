@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DamageModule.DamageProvider
 {
-    public class PhysicalDamageProvider : MonoBehaviour
+    public class CollisionHealthProvider : MonoBehaviour
     {
         [SerializeField] 
         private Collider2D _trigger;
@@ -17,9 +17,9 @@ namespace DamageModule.DamageProvider
 
         private void OnTriggerEnter2D(Collider2D col)
         {
-            if (col.TryGetComponent<IDamagable>(out var damagable) && _health != null)
+            if (col.TryGetComponent<IDamageProvider>(out var damageProvider) && _health != null)
             {
-                damagable.ApplyDamage(_health);
+                damageProvider.ApplyDamage(_health);
             }
         }
     }

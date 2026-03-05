@@ -19,6 +19,8 @@ public class EntryPoint : MonoBehaviour, ICoroutineRunner
         // открытие шторки загрузки
         LoadSave();
         Initialization();
+
+        StartCoroutine(_gameLoop.StartGame());
     }
 
     private void Initialization()
@@ -29,7 +31,7 @@ public class EntryPoint : MonoBehaviour, ICoroutineRunner
         _enemyWaveGenerator = _levelModel.EnemyWaveGenerator;
         _enemyWaveGenerator.Initialize(_battleConfig, enemyFactory); // возможно делать асинхронно, хз
             
-        _gameLoop = new GameLoop(this, _enemyWaveGenerator);
+        _gameLoop = new GameLoop(this, _enemyWaveGenerator, _battleConfig);
     }
 
     private void LoadSave() { }

@@ -624,10 +624,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level
       objectReference: {fileID: 0}
-    - target: {fileID: 8183195465570806670, guid: f20cb60de21b3a144a9264e8e7e8444b, type: 3}
-      propertyPath: _percentageOfEnemyCountPullSize
-      value: 0.25
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
