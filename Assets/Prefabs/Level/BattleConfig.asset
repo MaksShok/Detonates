@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: BattleConfig
   m_EditorClassIdentifier: Assembly-CSharp::LevelModule.BattleGenerationConfig
   <IsLoopLastWave>k__BackingField: 1
-  <WaveCooldownTimeSec>k__BackingField: 4
+  <WaveCooldownTimeSec>k__BackingField: 5
   <WaveInfos>k__BackingField:
-  - <Duration>k__BackingField: 5
+  - <Duration>k__BackingField: 20
     <EnemiesSpawnInfo>k__BackingField:
     - <EnemyBehavior>k__BackingField: {fileID: 6068824835318440716, guid: 005f22de2eebfe847b6dd94abeb1ea14, type: 3}
-      <Amount>k__BackingField: 3
+      <Amount>k__BackingField: 12
     <InteractableItems>k__BackingField: []
-  - <Duration>k__BackingField: 5
+  - <Duration>k__BackingField: 30
     <EnemiesSpawnInfo>k__BackingField:
     - <EnemyBehavior>k__BackingField: {fileID: 6068824835318440716, guid: 005f22de2eebfe847b6dd94abeb1ea14, type: 3}
-      <Amount>k__BackingField: 4
+      <Amount>k__BackingField: 15
     - <EnemyBehavior>k__BackingField: {fileID: 4017353900445822134, guid: e289d555e5eec314cb12b7687cc5307a, type: 3}
-      <Amount>k__BackingField: 2
+      <Amount>k__BackingField: 7
     <InteractableItems>k__BackingField: []

@@ -25,7 +25,12 @@ public class EntryPoint : MonoBehaviour, ICoroutineRunner
 
     private void Initialization()
     {
+        var towerHealthBar = _levelModel.TowerTransform.GetComponent<HealthBar>();
         HealthModel towerHealth = new HealthModel(_levelModel.TowerHealth);
+        towerHealthBar.Initialize(towerHealth, _levelModel.TowerHealth);
+
+        towerHealth.OnDie += () => _levelModel.TowerTransform.gameObject.SetActive(false);//Test
+        
         EnemyFactory enemyFactory = new EnemyFactory(_levelModel.TowerTransform, towerHealth);
 
         _waveGenerator = _levelModel.WaveGenerator;

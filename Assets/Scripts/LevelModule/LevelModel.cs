@@ -1,5 +1,4 @@
-﻿using EnemyModule;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace LevelModule
 {
