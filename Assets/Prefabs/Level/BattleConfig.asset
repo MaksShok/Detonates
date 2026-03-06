@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 834e89610c6540d0960bbde0a8779ddc, type: 3}
+  m_Name: BattleConfig
+  m_EditorClassIdentifier: Assembly-CSharp::LevelModule.BattleGenerationConfig
+  <IsLoopLastWave>k__BackingField: 1
+  <WaveCooldownTimeSec>k__BackingField: 4
+  <WaveInfos>k__BackingField:
+  - <Duration>k__BackingField: 5
+    <EnemiesSpawnInfo>k__BackingField:
+    - <EnemyBehavior>k__BackingField: {fileID: 6068824835318440716, guid: 005f22de2eebfe847b6dd94abeb1ea14, type: 3}
+      <Amount>k__BackingField: 3
+    <InteractableItems>k__BackingField: []
+  - <Duration>k__BackingField: 5
+    <EnemiesSpawnInfo>k__BackingField:
+    - <EnemyBehavior>k__BackingField: {fileID: 6068824835318440716, guid: 005f22de2eebfe847b6dd94abeb1ea14, type: 3}
+      <Amount>k__BackingField: 4
+    - <EnemyBehavior>k__BackingField: {fileID: 4017353900445822134, guid: e289d555e5eec314cb12b7687cc5307a, type: 3}
+      <Amount>k__BackingField: 2
+    <InteractableItems>k__BackingField: []
