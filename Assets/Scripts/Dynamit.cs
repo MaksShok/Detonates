@@ -17,6 +17,10 @@ public class Dynamite : MonoBehaviour
     public float explosionDamage = 100f;
     public GameObject explosionEffect;
     
+    [Header("Настройки анимации")]
+    public Animator dynamiteAnimator;
+    public string fuseAnimationTrigger = "Fuse";
+    
     private bool isHeld = false;
     private bool isPlaced = false;
     private Transform holdPoint;
@@ -35,34 +39,30 @@ public class Dynamite : MonoBehaviour
         {
             rb = gameObject.AddComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
-            rb.linearDamping = 5f;
         }
 
         if (playerLayer == 0)
             playerLayer = LayerMask.GetMask("Player");
 
-        // Исчезновение динамита если он просто лежит
         if (!isHeld && !isPlaced)
             Invoke(nameof(Disappear), disappearIfNotPickedUp);
+            
+        if (dynamiteAnimator == null)
+            dynamiteAnimator = GetComponent<Animator>();
     }
 
     void Update()
     {
         if (isHeld)
         {
-            FollowPlayer();
+            if (holdPoint != null)
+            {
+                transform.position = holdPoint.position;
+            }
         }
         else if (!isPlaced)
         {
             CheckPickUp();
-        }
-    }
-
-    void FollowPlayer()
-    {
-        if (holdPoint != null)
-        {
-            transform.position = Vector3.Lerp(transform.position, holdPoint.position, Time.deltaTime * 15f);
         }
     }
 
@@ -89,37 +89,29 @@ public class Dynamite : MonoBehaviour
     {
         PlayerController playerController = player.GetComponent<PlayerController>();
 
-        // проверка есть динамит или нет
         if (playerController != null)
         {
             if (playerController.HasDynamite())
-            {
                 return;
-            }
 
             holdPoint = playerController.GetHoldPoint();
 
             if (holdPoint == null)
-            {
                 return;
-            }
 
             isHeld = true;
 
-            if (dynamiteCollider != null)
-                dynamiteCollider.enabled = false;
-
-            if (rb != null)
-                rb.simulated = false;
+            dynamiteCollider.enabled = false;
+            rb.simulated = false;
 
             CancelInvoke(nameof(Disappear));
             CancelInvoke(nameof(Explode));
 
+            transform.SetParent(holdPoint);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+
             playerController.SetDynamite(gameObject);
-
-            transform.parent = player.transform;
-
-            Debug.Log("Динамит подобран!");
         }
     }
 
@@ -128,29 +120,23 @@ public class Dynamite : MonoBehaviour
         isHeld = false;
         isPlaced = true;
 
-        transform.parent = null;
+        transform.SetParent(null);
 
-        
-        if (dynamiteCollider != null)
-            dynamiteCollider.enabled = true;
+        dynamiteCollider.enabled = true;
+        rb.simulated = true;
 
-        if (rb != null)
-            rb.simulated = true;
-
-        // тут я отменяю взрыв
         CancelInvoke(nameof(Disappear));
-
+        
+        if (dynamiteAnimator != null && !string.IsNullOrEmpty(fuseAnimationTrigger))
+        {
+            dynamiteAnimator.SetTrigger(fuseAnimationTrigger);
+        }
+        
         Invoke(nameof(Explode), fuseTime);
 
-        if (spriteRenderer != null)
-            spriteRenderer.color = Color.red;
-
-        if (player != null)
-        {
-            PlayerController pc = player.GetComponent<PlayerController>();
-            if (pc != null)
-                pc.RemoveDynamite();
-        }
+        PlayerController pc = player.GetComponent<PlayerController>();
+        if (pc != null)
+            pc.RemoveDynamite();
     }
 
     public void Place()
@@ -189,7 +175,6 @@ public class Dynamite : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
-
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, pickUpRange);
     }
